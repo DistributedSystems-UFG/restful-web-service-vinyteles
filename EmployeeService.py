@@ -9,7 +9,7 @@ from flask import request
 from flask import abort
 
 app = Flask(__name__)
-
+MAX_SALARY = 9999999999
 empDB=[
  {
  'id':'101',
@@ -34,6 +34,36 @@ def getEmp(empId):
     usr = [ emp for emp in empDB if (emp['id'] == empId) ] 
     return jsonify({'emp':usr})
 
+@app.route('/empdb/employee/averagesalary', methods=['GET'])
+def getAverageSalary():
+    average = 0
+    i = 0
+    for employee in empDB:
+        average += int(employee["salary"])
+        i += 1
+    average /= i
+
+    return jsonify({"average": average})
+
+@app.route('/empdb/employee/maxsalary', methods=['GET'])
+def getMaxSalary():
+    average = 0
+    i = 0
+    for employee in empDB:
+        if average < int(employee["salary"]):
+            average = int(employee["salary"])
+        i += 1
+    return jsonify({"max_salary": average})
+
+@app.route('/empdb/employee/minsalary', methods=['GET'])
+def getMinSalary():
+    average = MAX_SALARY
+    i = 0
+    for employee in empDB:
+        if average > int(employee["salary"]):
+            average = int(employee["salary"])
+        i += 1
+    return jsonify({"max_salary": average})
 
 @app.route('/empdb/employee/<empId>',methods=['PUT'])
 def updateEmp(empId):
